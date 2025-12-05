@@ -1,0 +1,45 @@
+name: Windows Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.12', '3.13']
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+    
+    - name: Lint with flake8
+      run: |
+        pip install flake8
+        flake8 exo --count --select=E9,F63,F7,F82 --show-source --statistics
+    
+    - name: Test Windows configuration module
+      run: |
+        python -c "from exo.windows_config import get_windows_config; config = get_windows_config(); print('Windows config loaded successfully')"
+    
+    - name: Test backend service
+      run: |
+        python -c "from exo.service import BackendService, ServiceManager; print('Backend service imported successfully')"
+    
+    - name: Check installation scripts
+      run: |
+        if (Test-Path "install_windows.ps1") { Write-Host "PowerShell installer found" }
+        if (Test-Path "install_windows.bat") { Write-Host "Batch installer found" }

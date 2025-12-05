@@ -1,0 +1,30 @@
+Exo Windows Fork - GPL-3.0 License
+
+This project is a Windows-optimized fork of the exo-explore/exo distributed inference framework.
+
+The GPL-3.0 License applies to all code in this repository, including:
+- Windows optimization modules
+- Backend service layer
+- Installation scripts
+- Documentation
+
+For the full GPL-3.0 License text, see the LICENSE file in the root directory.
+
+---
+
+NOTICE: This is a derivative work based on exo-explore/exo
+Original Project: https://github.com/exo-explore/exo
+Original License: GPL-3.0
+
+Modifications:
+- Windows system optimization
+- Backend service layer
+- Installation automation
+- Windows-specific documentation
+
+All modifications are also licensed under GPL-3.0.
+
+---
+
+Exo Windows Team
+December 2025
