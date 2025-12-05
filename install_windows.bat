@@ -58,7 +58,7 @@ if errorlevel 1 (
 
 echo.
 echo [5/5] Installing dependencies...
-pip install -e . -f setup_windows.py
+pip install -e . --config-settings="--setup-file=setup_windows.py" --global-option="--no-deps" --no-build-isolation
 if errorlevel 1 (
     echo Error: Failed to install dependencies
     pause
