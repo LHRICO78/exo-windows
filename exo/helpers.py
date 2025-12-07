@@ -236,6 +236,7 @@ def get_all_ip_addresses_and_interfaces():
       try:
         ip = get_if_addr(interface)
         if ip.startswith("0.0."): continue
+        if psutil.WINDOWS and ip.startswith("169.254."): continue # Filter out invalid Windows APIPA addresses
         simplified_interface = re.sub(r'^\\Device\\NPF_', '', interface)
         ip_addresses.append((ip, simplified_interface))
       except:
