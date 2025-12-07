@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import sys
 import atexit
 import signal
 import json
