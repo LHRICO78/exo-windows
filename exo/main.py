@@ -28,7 +28,8 @@ from exo.inference.inference_engine import get_inference_engine
 from exo.inference.tokenizers import resolve_tokenizer
 from exo.models import build_base_shard, get_repo
 from exo.viz.topology_viz import TopologyViz
-import uvloop
+if sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
+    import uvloop
 import concurrent.futures
 import resource
 import psutil
@@ -40,20 +41,26 @@ os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
 # Configure uvloop for maximum performance
 def configure_uvloop():
-    uvloop.install()
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    if sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
+        uvloop.install()
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
-    # Increase file descriptor limits on Unix systems
-    if not psutil.WINDOWS:
-      soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-      try: resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
-      except ValueError:
-        try: resource.setrlimit(resource.RLIMIT_NOFILE, (8192, hard))
-        except ValueError: pass
+        # Increase file descriptor limits on Unix systems
+        if not psutil.WINDOWS:
+          soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+          try: resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
+          except ValueError:
+            try: resource.setrlimit(resource.RLIMIT_NOFILE, (8192, hard))
+            except ValueError: pass
 
-    loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=min(32, (os.cpu_count() or 1) * 4)))
-    return loop
+        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=min(32, (os.cpu_count() or 1) * 4)))
+        return loop
+    else:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.set_default_executor(concurrent.futures.ThreadPoolExecutor(max_workers=min(32, (os.cpu_count() or 1) * 4)))
+        return loop
 
 # parse args
 parser = argparse.ArgumentParser(description="Initialize GRPC Discovery")
