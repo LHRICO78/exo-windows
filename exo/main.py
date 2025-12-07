@@ -31,8 +31,9 @@ from exo.models import build_base_shard, get_repo
 from exo.viz.topology_viz import TopologyViz
 if sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
     import uvloop
+    import resource
 import concurrent.futures
-import resource
+
 import psutil
 
 # TODO: figure out why this is happening
